@@ -22,19 +22,19 @@ export interface TContext{
     paid:boolean,
     login:(user:User)=>void,
     logout:(email:User['email'])=>void,
-    /*
+    
     addToCart:(product:Product)=>void,
-    removeToCart:(product:Product)=>void,
+    removeFromCart:(product:Product)=>void,
     // admin function
     addProduct:(product:Product)=>void,
     removeProduct:(product:Product)=>void,
     setAdmin:(admin:boolean)=>void,
     //
-    checkcout:()=>void,
+    checkout:()=>void,
     getTotalProductInCart: () => number,
     onCheckoutSuccess: () => void,
     getTotalAvailableProduct: () => number,
-    */
+    
 
 
 

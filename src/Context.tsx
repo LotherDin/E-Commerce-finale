@@ -11,19 +11,19 @@ cart:[],
 paid:false,
 login:()=>{},
 logout:()=>{},
-/*
+
 addToCart:()=>{},
-removeToCart:()=>{},
+removeFromCart:()=>{},
 // admin function
 addProduct:()=>{},
 removeProduct:()=>{},
 setAdmin:()=>{},
 //
-checkcout:()=>{},
+checkout:()=>{},
 getTotalProductInCart: () => 0,
 onCheckoutSuccess: () => {},
 getTotalAvailableProduct: () => 0,
-*/
+
 });
 
 interface Props {
@@ -55,7 +55,53 @@ export function ContextProvider({children}:Props){
         setUsers([]);
         localStorage.removeItem("email");
     }
+function removeFromCart(idProduct:Product['id']){
+    const productFound = cart.find((product) => product.prod.id === idProduct);
+    if(!!productFound && productFound.count === 1){
+        const newCart = cart.filter((productCart) => productCart.prod.id !== idProduct);
+        setCart(newCart);
+        if(!!productFound && productFound.count > 1){
+            const newCart = cart.map((cartProduct) => {
+                if(idProduct === cartProduct.prod.id)
+                    return {...cartProduct, count: cartProduct.count - 1};
+                return cartProduct;
+            });
+            setCart(newCart);
+        
+    }
+}}
+function addToCart(product:Product, count:number){
+    const productFound = cart.find((productCart) => product.id === productCart.prod.id);
+    if(!productFound){
+        const newCart = [...cart,{prod:product, count:count}];
+        setCart(newCart);
+    } else {
+        const newCart = cart.map((productCart)=>product.id === productCart.prod.id ? {...productCart, count: productCart.count + count} : {...productCart});
+        setCart(newCart);
+    }
+}
 
+
+
+function checkout(){
+    setPaid(true);
+    setCart([]);
+}
+function onCheckoutSuccess(){
+    setPaid(false);
+}
+function getTotalProductInCart(){
+    const total = cart.reduce((acc,productCart) =>{
+        return acc + productCart.count;
+    },0)
+    return total;
+}
+function getTotalAvailableProduct( product:Product){
+    const productInCart = cart.find(({prod})=>prod.id === product.id);
+    const totalProductInCart = productInCart ? productInCart.count : 0;
+    return product.count - totalProductInCart;
+
+}
 
 
     useEffect(()=>{
@@ -70,17 +116,17 @@ export function ContextProvider({children}:Props){
         paid,
         login,
         logout,
-        /*
+        
         addToCart,
-        removeToCart,
+        removeFromCart,
         addProduct,
         removeProduct,
         setAdmin,
-        checkcout,
+        checkout,
         getTotalProductInCart,
         onCheckoutSuccess,
         getTotalAvailableProduct
-        */}}>
+        }}>
             {children}
         </AppContext.Provider>
     );
